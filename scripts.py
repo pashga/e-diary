@@ -60,15 +60,17 @@ def remove_chastisements(schoolkid_name):
 
 def create_commendation(schoolkid_name, study):
     schoolkid = find_schoolkid(schoolkid_name)
-    lessons = Lesson.objects.filter(
+    lesson = Lesson.objects.filter(
         year_of_study=schoolkid.year_of_study,
         group_letter=schoolkid.group_letter,
         subject__title__contains=study
     ).order_by("-date").first()
+    if not lesson:
+        return f"Урок не найден"
     Commendation.objects.create(
         text=random.choice(COMMENDATIONS),
-        created=lessons.date,
+        created=lesson.date,
         schoolkid=schoolkid,
-        subject=lessons.subject,
-        teacher=lessons.teacher,
+        subject=lesson.subject,
+        teacher=lesson.teacher,
     )
